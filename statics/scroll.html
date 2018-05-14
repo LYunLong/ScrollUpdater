@@ -55,7 +55,7 @@
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 <script src="scripts/ScrollUpdater.js"></script>
 <script>
-    var su = new ScrollUpdater("body",{"direction":"down"},function(){
+    var su = new ScrollUpdater("html",{"direction":"down", "EZtrigger": true},function(){
         $.ajax({
             type:"GET",
             dataType:"json",

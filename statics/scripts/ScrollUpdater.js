@@ -6,6 +6,7 @@ var ScrollUpdater = function(selector,sets,callback){
     common._this = $(selector);
     common.callback = callback||function(){};
 
+    common.EZtrigger = (sets.EZtrigger&&sets.EZtrigger==true);
 
     common.isDown = (!sets.direction||sets.direction=="down");
     if(common.isDown){common.containerName = "down-refresh-info-container";}
@@ -63,17 +64,33 @@ var ScrollUpdater = function(selector,sets,callback){
         if(common.VerticalOffsetY>200){common.VerticalOffsetY=200;}
         if(common.VerticalOffsetY<0){common.VerticalOffsetY=0;}
 
-        if(common.isDown){
-            if(common.scrollHeight-common.screenHeight<=common.scrollTop){
-                common.canRefresh = true;
-                $("."+common.containerName).css("height",common.VerticalOffsetY+"px");
+        if(common.EZtrigger){
+
+            if(common.isDown){
+                if(common.scrollHeight-common.screenHeight<=common.scrollTop){
+                    common.callback();
+                }
             }else {
-                common.canRefresh = false;
+                if(common.scrollTop<=0){
+                    common.callback();
+                }
             }
+
         }else {
-            if(common.scrollTop<=0){common.canRefresh = true;$("."+common.containerName).css("height",common.VerticalOffsetY+"px");
-            }else {common.canRefresh = false;}
+            if(common.isDown){
+                if(common.scrollHeight-common.screenHeight<=common.scrollTop){
+                    common.canRefresh = true;
+                    $("."+common.containerName).css("height",common.VerticalOffsetY+"px");
+                }else {
+                    common.canRefresh = false;
+                }
+            }else {
+                if(common.scrollTop<=0){common.canRefresh = true;$("."+common.containerName).css("height",common.VerticalOffsetY+"px");
+                }else {common.canRefresh = false;}
+            }
         }
+
+
 
         if($("."+common.containerName).css("height")=="200px"&&common.canRefresh){$("."+common.containerName).html("松开手指刷新");
         }else {$("."+common.containerName).html("我还未生效");}
@@ -81,6 +98,7 @@ var ScrollUpdater = function(selector,sets,callback){
 
 
     common._this.on("touchend",function(){
+        if(common.EZtrigger){return;}
         (function(){
             if($("."+common.containerName).css("height")=="200px"&&common.canRefresh){
                 common.callback();
